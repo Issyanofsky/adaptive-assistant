@@ -1,0 +1,10 @@
+streamlit
+ollama
+SpeechRecognition
+gTTS
+pygame
+pydub
+pyaudio
+psycopg2-binary
+python-dotenv
+redis
