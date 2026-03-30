@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עוזרת אישית אדפטיבית</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <h2>מצב מערכת</h2>
+            <hr>
+            <div class="stat-box">
+                <span>מצב רוח מזוהה:</span>
+                <span id="detected-mood">טעינה...</span>
+            </div>
+            <div class="stat-box">
+                <span>אסטרטגיה בשימוש:</span>
+                <span id="used-strategy">טעינה...</span>
+            </div>
+            <div class="stat-box">
+                <span>כוונה מזוהה:</span>
+                <span id="detected-intent">טעינה...</span>
+            </div>
+
+            <h3>הגדרות קול</h3>
+            <hr>
+            <div class="stat-box">
+                <span>בחירת קול:</span>
+                <select id="voice-select" class="glass-select">
+                    <option value="">טוען קולות...</option>
+                </select>
+            </div>
+            <div class="stat-box">
+                <span>הקראה קולית:</span>
+                <label class="switch">
+                    <input type="checkbox" id="tts-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="chat-area">
+            <div class="chat-header">
+                <h1>עוזרת אישית חכמה</h1>
+                <div class="status-dot"></div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message assistant">
+                    שלום! איך אני יכולה לעזור לך היום?
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <button id="mic-btn" class="icon-btn">
+                    <i class="fa fa-microphone"></i>
+                </button>
+                
+                <input type="text" id="user-input" placeholder="הקלד הודעה או דבר לחצו על המיקרופון...">
+                
+                <button id="send-btn">שלח</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

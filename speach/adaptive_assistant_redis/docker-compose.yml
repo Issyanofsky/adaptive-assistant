@@ -1,15 +1,14 @@
-version: "3.9"
-
+version: '3.8'
 services:
   redis:
-    image: redis:8.2
-    container_name: redis-secure
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    image: redis:latest
+    container_name: adaptive_redis
     ports:
       - "6379:6379"
     volumes:
       - ./redis_data:/data
+      # 1. Map your local conf file to the container's config folder
       - ./redis.conf:/usr/local/etc/redis/redis.conf
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    # 2. Tell Redis to start using your specific conf file
+    command: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped

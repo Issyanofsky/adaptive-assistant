@@ -8,3 +8,6 @@ pyaudio
 psycopg2-binary
 python-dotenv
 redis
+duckduckgo-search
+crawl4ai
+playwright

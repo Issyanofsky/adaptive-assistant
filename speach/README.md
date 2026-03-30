@@ -279,22 +279,50 @@ strategy = select_best_strategy(user, top_task)
     ​[ ] 7.2 Optimize prompts for free-tier LLMs
 
 
-## sql_create_schema.py
-this file create the data tables on the postSql server (as mention abouve)
+## 📁 Project Structure & File Purposes
 
-## seed_data.py
-This file is just for testing. create a user in the DB.
+### 🧠 Core Assistant Logic (Root Directory)
+* **`main.py`** - The Master State Machine. Orchestrates the flow of user input through intent analysis, mood tracking, task execution, and response generation.
+* **`llm_engine.py`** - Connects to the local, free **Aya** model via Ollama. It parses Hebrew user input to extract intent, entities, and psychological mood states.
+* **`ranking_task.py`** - Calculates dynamic priority scores for pending tasks based on base weights, user preferences, and live mood modifiers.
+* **`strategy_selector.py`** - Evaluates persuasion strategies (Urgency, Reward, Chunking, etc.) against strategy fatigue and user effectiveness scores.
+* **`qa_handler.py`** - Manages context retrieval. It queries the PostgreSQL local or web context tables to answer user questions with local or scraped data.
+* **`mood_tracker.py`** - Analyzes psychological trends (improving/worsening) and handles the critical "back-off" cooldown logic to prevent nagging frustrated users.
+* **`database.py`** - Centralized helper script to establish standard pooling or direct connections to the PostgreSQL database.
+* **`redis_session.py`** - Oversees all active user session variables, live mood states, task cooldowns, and short-term chat history in Redis.
 
-## redis.py
-This file manages short-term session memory in Redis for your adaptive assistant. It handles: Conversation history, Current mood, Task cooldowns.
+### 🌐 Web Server & Interface
+* **`app.py`** - The FastAPI backend web server that acts as a secure, fast API bridge between your UI and your Python files.
+* **`html/`** - The Frontend folder containing the professional, "Glassmorphism" UI with dark mode, full RTL Hebrew support, and native two-way Web Speech (STT and TTS) API integration.
 
-Run redis server:
+### 🐳 Infrastructure & Database Management
+* **`adaptive_assistant_redis/`** - Holds your Docker Compose setup, persistent data volume, and configuration for running Redis in a sandbox.
+* **`sql_create_schema.py`** & **`seed_data.py`** - Used to construct your PostgreSQL tables and load test mock data for your system to pull from.
+* **`requirements.txt`** - The complete list of python libraries (like FastAPI, psycopg2, redis, and uvicorn) needed to run this stack.
+* **`populate_qa.py'** - populate data for QA. imports data and set the knowlage needed by the model to answer.
 
-Open PowerShell in your project folder:
-```powershell
+# 🚀 How to Run the Project (Full Guide)
+Here is your complete, master startup guide updated with all the changes we just made. You will open three separate terminals (or terminal tabs).
+Step 1: Fire up Redis and PostgresSql
+Navigate to your Redis folder and start the Docker container in the background.
+cd speach/adaptive_assistant_redis
 docker-compose up -d
-```
-Check the container:
-```powershell
-docker ps
-```
+
+Step 2: Fire up your local LLM
+Open a new terminal and start your local Aya model so the backend server can access it for Hebrew processing.
+ollama run aya
+
+Step 3: Start the Backend and Frontend Server
+Open a new terminal in your root speach/ folder. First, ensure your dependencies are installed and properly updated:
+cd speach
+pip install -r requirements.txt
+
+(Note: If you haven't run your database schema and seed data files yet, do that now with python sql_create_schema.py and python seed_data.py)
+Now, start the FastAPI application:
+uvicorn app:app --reload
+
+Step 4: Open the Web Interface
+Look at your terminal logs from Step 3. You will see a log saying Uvicorn running on http://127.0.0.1:8000.
+ * Open your Google Chrome or Edge web browser.
+ * Go directly to: http://127.0.0.1:8000
+FastAPI is now securely serving your webpage! Click on the microphone icon to speak to your assistant or type out a response.

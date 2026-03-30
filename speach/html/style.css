@@ -1,0 +1,130 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --dark-bg: #0f172a;
+}
+
+body {
+    margin: 0;
+    font-family: 'Heebo', sans-serif;
+    background: var(--dark-bg);
+    background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-color);
+}
+
+.app-container {
+    display: flex;
+    width: 90vw;
+    height: 85vh;
+    max-width: 1200px;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 300px;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 30px;
+    border-left: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2, .sidebar h3 {
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.sidebar h2 { font-size: 1.5rem; }
+.sidebar h3 { font-size: 1.2rem; margin-top: 20px; }
+
+.sidebar hr {
+    border: 0;
+    height: 1px;
+    background: var(--glass-border);
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+/* === Voice Specific Styling === */
+}
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.1);
+  transition: .4s;
+  border-radius: 20px;
+}
+input:checked + .slider { background: #10b981; }
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px; width: 14px;
+  left: 3px; bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Glass Select Box */
+.glass-select {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--glass-border);
+    color: white;
+    border-radius: 8px;
+    padding: 5px;
+    font-family: inherit;
+    outline: none;
+    max-width: 140px;
+}
+
+/* Mic Button Glow and Listening Animation */
+.icon-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+}
+.icon-btn.listening {
+    background: #ef4444;
+    box-shadow: 0 0 15px #ef4444;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
