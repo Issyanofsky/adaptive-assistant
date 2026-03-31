@@ -1,4 +1,3 @@
-
 const sendBtn = document.getElementById('send-btn');
 const userInput = document.getElementById('user-input');
 const chatMessages = document.getElementById('chat-messages');
@@ -11,6 +10,7 @@ const USER_ID = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
 // --- TEXT TO SPEECH (TTS) SETUP ---
 let voices = [];
+
 function loadVoices() {
     voices = window.speechSynthesis.getVoices();
     voiceSelect.innerHTML = '';
@@ -20,10 +20,11 @@ function loadVoices() {
         option.value = index;
         option.textContent = `${voice.name} (${voice.lang})`;
         
-        // Auto-select Hebrew voice if found
-        if (voice.lang.includes('he') || voice.lang.includes('IL')) {
+        // More accurate Hebrew selection
+        if (voice.lang === 'he-IL') {
             option.selected = true;
         }
+
         voiceSelect.appendChild(option);
     });
 }
@@ -34,11 +35,14 @@ loadVoices();
 
 function speak(text) {
     if (!ttsToggle.checked) return;
+
+    // Prevent overlapping speech
+    window.speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
     const selectedVoiceIndex = voiceSelect.value;
     
-    if (selectedVoiceIndex && voices[selectedVoiceIndex]) {
+    if (selectedVoiceIndex !== '' && voices[selectedVoiceIndex]) {
         utterance.voice = voices[selectedVoiceIndex];
     }
     
@@ -114,6 +118,12 @@ async function sendMessage() {
         
         // Update Sidebar Stats
         document.getElementById('detected-mood').innerText = `תסכול: ${data.mood.frustration}`;
+        document.getElementById('confidence').innerText = data.intent_confidence ?? 'N/A';
+
+        document.getElementById('entities').innerText = 
+            Array.isArray(data.extracted_entities) 
+                ? data.extracted_entities.join(', ') 
+                : 'אין';
         document.getElementById('used-strategy').innerText = data.strategy_used;
         document.getElementById('detected-intent').innerText = data.detected_intent;
 
@@ -129,8 +139,11 @@ function appendMessage(text, sender) {
     msgDiv.innerText = text;
     chatMessages.appendChild(msgDiv);
     
-    // Auto scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    // Smooth auto scroll (better UX)
+    chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
 sendBtn.addEventListener('click', sendMessage);

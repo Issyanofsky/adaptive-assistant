@@ -8,6 +8,8 @@ pyaudio
 psycopg2-binary
 python-dotenv
 redis
-duckduckgo-search
+# duckduckgo-search
 crawl4ai
-playwright
+playwright # python -m playwright install
+ddgs
+

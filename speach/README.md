@@ -284,9 +284,10 @@ strategy = select_best_strategy(user, top_task)
 ### 🧠 Core Assistant Logic (Root Directory)
 * **`main.py`** - The Master State Machine. Orchestrates the flow of user input through intent analysis, mood tracking, task execution, and response generation.
 * **`llm_engine.py`** - Connects to the local, free **Aya** model via Ollama. It parses Hebrew user input to extract intent, entities, and psychological mood states.
+* **`task_handler.py'** - manage the Tasks
 * **`ranking_task.py`** - Calculates dynamic priority scores for pending tasks based on base weights, user preferences, and live mood modifiers.
 * **`strategy_selector.py`** - Evaluates persuasion strategies (Urgency, Reward, Chunking, etc.) against strategy fatigue and user effectiveness scores.
-* **`qa_handler.py`** - Manages context retrieval. It queries the PostgreSQL local or web context tables to answer user questions with local or scraped data.
+* **`qa_handler.py`** - Manages context retrieval. It queries the PostgreSQL local or web context tables to answer user questions with local or scraped data and outside WEB.
 * **`mood_tracker.py`** - Analyzes psychological trends (improving/worsening) and handles the critical "back-off" cooldown logic to prevent nagging frustrated users.
 * **`database.py`** - Centralized helper script to establish standard pooling or direct connections to the PostgreSQL database.
 * **`redis_session.py`** - Oversees all active user session variables, live mood states, task cooldowns, and short-term chat history in Redis.

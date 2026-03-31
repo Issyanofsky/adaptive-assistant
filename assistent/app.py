@@ -33,7 +33,7 @@ app.add_middleware(
 )
 
 redis_session = SessionManager()
-llm = AyaLLMEngine(redis_session)
+llm = AyaLLMEngine()
 
 class ChatRequest(BaseModel):
     user_id: str
@@ -44,17 +44,10 @@ async def chat_endpoint(request: ChatRequest):
     db_conn = get_db_connection()
     cur = db_conn.cursor()
     
-    # set Redis history
-    chat_history = redis_session.get_history(request.user_id)
-    print(f"[DEBUG] chat History:\n {chat_history}")
-
     # 1. Parse user input using Aya (Intents, Mood, Entities)
-    analysis = llm.parse_user_input(request.message, chat_history)
+    analysis = llm.parse_user_input(request.message)
     detected_intent = analysis.get("detected_intent", "unknown")
     mood = analysis.get("mood", {"valence": 0.0, "frustration": 0.0, "engagement": 0.5, "resistance": 0.0})
-    intent_confidence = analysis.get("intent_confidence", 0)
-    extracted_entities = analysis.get("intent_confidence", "N/A")
-
     
     # 2. Update Mood Tracker
     mood_tracker = MoodTracker(db_conn, redis_session)
@@ -86,8 +79,7 @@ async def chat_endpoint(request: ChatRequest):
         strategy=strategy_used,
         mood=mood,
         knowledge_base_data=knowledge_base_data,
-        current_task=selected_task,
-        chat_history=chat_history
+        current_task=selected_task
     )
 
     # 6. Save to Redis History
@@ -98,15 +90,11 @@ async def chat_endpoint(request: ChatRequest):
     cur.close()
     db_conn.close()
 
-    print(f"[DEBUG] Responce:\n {response_text}")
     return {
         "response": response_text,
         "detected_intent": detected_intent,
         "mood": mood,
-        "strategy_used": strategy_used,
-        "intent_confidence": intent_confidence,
-        "extracted_entities": extracted_entities
-
+        "strategy_used": strategy_used
     }
 
 app.mount("/", StaticFiles(directory="html", html=True), name="html")

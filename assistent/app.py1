@@ -1,0 +1,74 @@
+# app.py
+import importlib
+from llm import LLMCommunicator
+
+
+class AgentBrain:
+
+    def __init__(self, llm_client: LLMCommunicator):
+        self.llm = llm_client
+        self.current_task = None
+        self.task_module = None
+        self.data = {}
+
+    def process_input(self, user_input: str):
+
+        # STEP 1: LOAD TASK IF NOT SET
+        if not self.current_task:
+            self._detect_task(user_input)
+
+        if not self.task_module:
+            return "I don’t understand the request."
+
+        # STEP 2: EXTRACT DATA
+        extracted = self.llm.generate_json(
+            self.task_module.extraction_prompt(user_input),
+            self.task_module.extraction_schema()
+        )
+
+        for k, v in extracted.items():
+            if v is not None:
+                self.data[k] = v
+
+        # STEP 3: CHECK MISSING
+        missing = [
+            v for v in self.task_module.REQUIRED_VARS
+            if v not in self.data
+        ]
+
+        if missing:
+            question = self.llm.generate_json(
+                self.task_module.next_step_prompt(self.data, missing[0]),
+                self.task_module.next_step_schema()
+            )
+            return question.get("next_question", "Can you clarify?")
+
+        # STEP 4: EXECUTE
+        return f"✅ Task '{self.current_task}' completed with data: {self.data}"
+
+    def _detect_task(self, user_input: str):
+        """
+        Simple detection (replace later with classifier LLM)
+        """
+        if "meeting" in user_input.lower():
+            self._load_task("schedule_meeting")
+
+    def _load_task(self, task_name: str):
+        try:
+            module = importlib.import_module(f"tasks.{task_name}")
+            self.task_module = module
+            self.current_task = task_name
+        except Exception as e:
+            print("TASK LOAD ERROR:", e)
+
+
+# RUNNER
+if __name__ == "__main__":
+    from config import LLM_API_KEY, DEFAULT_MODEL
+
+    llm = LLMCommunicator(LLM_API_KEY, DEFAULT_MODEL)
+    agent = AgentBrain(llm)
+
+    while True:
+        user_input = input("You: ")
+        print("Bot:", agent.process_input(user_input))
